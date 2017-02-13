@@ -19,8 +19,19 @@ related links:
 
 https://forum.bela.io/d/69-serial-communication-or-similar/8
 
-https://www.adafruit.com/products/2868
+https://www.adafruit.com/products/2868  
 
 https://github.com/BelaPlatform/Bela/blob/master/examples/05-Communication/OSC/render.cpp
+
+2/13/17
+
+how does bela address LEDs / conversely, can we still program the BBB to directly address LEDstrips  
+
+SSL certificates expired on the Force so python script couldnt handshake with the force via webaudio but itll work 
+
+
+
+
+
 
 
