@@ -40,5 +40,5 @@ learned the difference between sinf and sinf_neon (part of the math_neon)
 figure out easiest way to send osc message from laptop on windows
 twisted: pipe network traffic from one port to another 
 
-
+figure out how to generate a square wave on one of the output pins (not the audio out!) 
 
