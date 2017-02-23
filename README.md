@@ -29,9 +29,16 @@ how does bela address LEDs / conversely, can we still program the BBB to directl
 
 SSL certificates expired on the Force so python script couldnt handshake with the force via webaudio but itll work 
 
+2/23/17
 
+received bela - editor works on current setup 
+downloaded fritzing and bela part 
+how many outputs can it drive from a 5v power supply (max current draw)
 
+learned the difference between sinf and sinf_neon (part of the math_neon)
 
+figure out easiest way to send osc message from laptop on windows
+twisted: pipe network traffic from one port to another 
 
 
 
