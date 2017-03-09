@@ -42,3 +42,8 @@ twisted: pipe network traffic from one port to another
 
 figure out how to generate a square wave on one of the output pins (not the audio out!) 
 
+3/9/17
+
+local fork of the force to investigate float/int communication to bela issue 
+learning about floats v ints - FIXED
+
