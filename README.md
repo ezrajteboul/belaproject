@@ -47,3 +47,13 @@ figure out how to generate a square wave on one of the output pins (not the audi
 local fork of the force to investigate float/int communication to bela issue 
 learning about floats v ints - FIXED
 
+4/13/17
+
+try analog out example w proper led parts 
+rewrite analogoscout example after copy paste fiasco 
+(Maybe:try using the scope monitoring to view inputs and outputs) 
+
+
+
+
+
