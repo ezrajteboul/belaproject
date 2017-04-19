@@ -82,6 +82,26 @@ bool setup(BelaContext *context, void *userData)
 
 	gInverseSampleRate = 1.0 / context->analogSampleRate;
 	gPhase = 0.0;
+	
+	oscServer.setup(localPort);
+    oscClient.setup(remotePort, remoteIp);
+   
+		 // the following code sends an OSC message to address /osc-setup
+    // then waits 1 second for a reply on /osc-setup-reply
+    bool handshakeReceived = false;
+    oscClient.sendMessageNow(oscClient.newMessage.to("/osc-setup").end());
+    oscServer.receiveMessageNow(1000);
+    while (oscServer.messageWaiting()){
+        if (oscServer.popMessage().match("/osc-setup-reply")){
+            handshakeReceived = true;
+        }
+    }
+    
+    if (handshakeReceived){
+        rt_printf("handshake received!\n");
+    } else {
+        rt_printf("timeout!\n");
+    }
 
 	return true;
 }
@@ -106,24 +126,11 @@ void render(BelaContext *context, void *userData)
 			gPhase -= 2.0 * M_PI;
 	}
 	
-	 // the following code sends an OSC message to address /osc-setup
-    // then waits 1 second for a reply on /osc-setup-reply
-    bool handshakeReceived = false;
-    oscClient.sendMessageNow(oscClient.newMessage.to("/osc-setup").end());
-    oscServer.receiveMessageNow(1000);
-    while (oscServer.messageWaiting()){
-        if (oscServer.popMessage().match("/osc-setup-reply")){
-            handshakeReceived = true;
-        }
+	while (oscServer.messageWaiting()){
+        int count = parseMessage(oscServer.popMessage());
+        oscClient.queueMessage(oscClient.newMessage.to("/osc-acknowledge").add(count).add(4.2f).add(std::string("OSC message received")).end());
     }
-    
-    if (handshakeReceived){
-        rt_printf("handshake received!\n");
-    } else {
-        rt_printf("timeout!\n");
-    }
-    
-	return true;
+
 }
 
 
@@ -131,30 +138,3 @@ void cleanup(BelaContext *context, void *userData)
 {
 
 }
-
-
-/**
-\example analog-output/render.cpp
-Fading LEDs
------------
-This sketch uses a sine wave to drive the brightness of a series of LEDs 
-connected to the eight analog out pins. Again you can see the nested `for` loop 
-structure but this time for the analog output channels rather than the audio.
-- connect an LED in series with a 470ohm resistor between each of the analogOut pins and ground.
-Within the first for loop in render we cycle through each frame in the analog 
-output matrix. At each frame we then cycle through the analog output channels 
-with another for loop and set the output voltage according to the phase of a 
-sine tone that acts as an LFO. The analog output pins can provide a voltage of 
-~4.092V.
-The output on each pin is set with `analogWrite()` within the for loop that 
-cycles through the analog output channels. This needs to be provided with 
-arguments as follows `analogWrite(context, n, channel, out)`. Channel is 
-where the you give the address of the analog output pin (in this case we cycle 
-through each pin address in the for loop), out is the variable that holds the 
-desired output (in this case set by the sine wave) and `n` is the frame number 
-(given by the other for loop).
-Notice that the phase of the brightness cycle for each led is different. This 
-is achieved by updating a variable that stores a relative phase value. This 
-variable is advanced by pi/4 (1/8 of a full rotation) for each channel giving 
-each of the eight LEDs a different phase.
-*/
