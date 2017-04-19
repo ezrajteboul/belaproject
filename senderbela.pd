@@ -1,0 +1,28 @@
+#N canvas 91 195 984 405 10;
+#X obj 139 359 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X obj 139 327 mrpeach/udpsend;
+#X msg 149 295 connect 127.0.0.1 9997;
+#X msg 141 265 disconnect;
+#X obj 89 225 mrpeach/packOSC;
+#X text 286 294 change to IP + port of udpserver;
+#X obj 89 167 list;
+#X floatatom 110 84 5 0.5 40.5 0 value - -, f 5;
+#X floatatom 89 139 3 0 7 0 output - -, f 3;
+#X obj 200 225 print, f 6;
+#X msg 43 163 1 55;
+#X obj 129 118 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X msg 89 196 send /freq \$1 \$2;
+#X connect 1 0 0 0;
+#X connect 2 0 1 0;
+#X connect 3 0 1 0;
+#X connect 4 0 1 0;
+#X connect 6 0 12 0;
+#X connect 7 0 6 1;
+#X connect 7 0 11 0;
+#X connect 8 0 6 0;
+#X connect 10 0 12 0;
+#X connect 11 0 8 0;
+#X connect 12 0 4 0;
+#X connect 12 0 9 0;
