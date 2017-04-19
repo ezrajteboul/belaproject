@@ -53,7 +53,18 @@ try analog out example w proper led parts
 rewrite analogoscout example after copy paste fiasco 
 (Maybe:try using the scope monitoring to view inputs and outputs) 
 
+4/19
 
+looks like problem was with chrome, save works fine in firefox 
+made the analog out+osc properly compile, still blinks and receives message but doesn't print / process values properly...
+OSC routes fine from pd patches (uploaded those) 
+tests fine with Rob sending osc packets over the local network
 
-
+Todo: 
+- fix parsing and change rate of LED blinkage 
+- write the code to affect each channel independently 
+- test with synth 
+- figure out how to send data back from Bela 
+- design, source parts for and build circuit to interface / protect voltage ranges for I/O 
+- design interesting signals / shapes to make in PD to send to the synth 
 
