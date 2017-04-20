@@ -35,7 +35,7 @@ float gPhase;
 float gInverseSampleRate;
 //make an outputfreq and input array for all the analog ins and outs on the board. inputs are not yet implemented. 
 float outputfreq [8];
-float input [8]; 
+float outputPhases [8]; 
 //this is the stuff for the osc server: 
 int localPort = 7562;
 int remotePort = 7563;
@@ -89,8 +89,12 @@ bool setup(BelaContext *context, void *userData)
 	gInverseSampleRate = 1.0 / context->analogSampleRate;
 	gPhase = 0.0;
 	
+	for(int i = 0; i < 8; i++) {
+		outputPhases[i] = 0;
+	}
+	
 	oscServer.setup(localPort);
-    oscClient.setup(remotePort, remoteIp);
+    	oscClient.setup(remotePort, remoteIp);
    
 	// the following code sends an OSC message to address /osc-setup
 	// then waits 1 second for a reply on /osc-setup-reply
@@ -115,25 +119,19 @@ bool setup(BelaContext *context, void *userData)
 void render(BelaContext *context, void *userData)
 {
 	for(unsigned int n = 0; n < context->analogFrames; n++) {
-		// Set LED to different phase for each matrix channel
-		float relativePhase = 0.0;
+		
 		for(unsigned int channel = 0; channel < context->analogOutChannels; channel++) {
-			float out = kMinimumAmplitude + kAmplitudeRange * 0.5f * (1.0f + sinf(gPhase + relativePhase));
+			float out = kMinimumAmplitude + kAmplitudeRange * 0.5f * (1.0f + sinf(outputPhases[channel]));
 
 			analogWrite(context, n, channel, out);
 
-			// Advance by pi/4 (1/8 of a full rotation) for each channel
-			relativePhase += M_PI * 0.25;
+        		// Update and wrap phase of sine tone
+			//this is the original code using gFrequency from the analog out example
+			//gPhase += 2.0 * M_PI * gFrequency * gInverseSampleRate;
+			outputPhases[channel] += 2.0 * M_PI * outputfreq[channel] * gInverseSampleRate;
+			if(outputPhases[channel] > 2.0 * M_PI)
+				outputPhases[channel] -= 2.0 * M_PI;
 		}
-
-        // Update and wrap phase of sine tone
-		//this is the original code using gFrequency from the analog out example
-		//gPhase += 2.0 * M_PI * gFrequency * gInverseSampleRate;
-		//but we want to use our newly created output frequency array values, like this?
-		gPhase += 2.0 * M_PI * outputfreq[intArg] * gInverseSampleRate;
-		if(gPhase > 2.0 * M_PI)
-			gPhase -= 2.0 * M_PI;
-		
 	// is this where updating the outputfreq array goes? 
 	}
 	
