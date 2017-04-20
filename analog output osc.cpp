@@ -30,7 +30,7 @@ OSCClient oscClient;
 const float kMinimumAmplitude = (1.5 / 5.0);
 const float kAmplitudeRange = 1.0 - kMinimumAmplitude;
 
-float gFrequency = 3.0;
+float gFrequency = 1.0;
 float gPhase;
 float gInverseSampleRate;
 int localPort = 7562;
@@ -48,12 +48,12 @@ int parseMessage(oscpkt::Message msg){
     if (msg.match("/osc-test").popInt32(intArg).popFloat(floatArg).isOkNoMoreArgs()){
         rt_printf("received int %i and float %f\n", intArg, floatArg);
     }
-    else if  (msg.match("/freq").popFloat(floatArg).popFloat(fA).isOkNoMoreArgs()){
+    else if  (msg.match("/freq").popFloat(fA).popFloat(floatArg).isOkNoMoreArgs()){
     	rt_printf("here\n");
     //else if  (msg.match("/freq").popFloat(floatArg).isOkNoMoreArgs()){
     	//rt_printf("here\n");
     // we added an else if condition to make sure the received freq value is within certain range
-    	if (floatArg <= 12000 && floatArg >= 40)
+    	if (floatArg <= 12000 && floatArg >= 1)
     	{
     		rt_printf("received float %f\n", floatArg);
     		gFrequency=floatArg;
