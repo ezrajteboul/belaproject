@@ -33,6 +33,8 @@ const float kAmplitudeRange = 1.0 - kMinimumAmplitude;
 float gFrequency = 1.0;
 float gPhase;
 float gInverseSampleRate;
+float outputfreq [8];
+float input [8]; 
 int localPort = 7562;
 int remotePort = 7563;
 const char* remoteIp = "192.168.7.1";
@@ -44,20 +46,20 @@ int parseMessage(oscpkt::Message msg){
     rt_printf("received message to: %s\n", msg.addressPattern().c_str());
     
     int intArg;
-    float floatArg, fA;
+    float floatArg;
     if (msg.match("/osc-test").popInt32(intArg).popFloat(floatArg).isOkNoMoreArgs()){
         rt_printf("received int %i and float %f\n", intArg, floatArg);
     }
-    else if  (msg.match("/freq").popFloat(fA).popFloat(floatArg).isOkNoMoreArgs()){
+    else if  (msg.match("/freq").popInt32(intArg).popFloat(floatArg).isOkNoMoreArgs()){
     	rt_printf("here\n");
     //else if  (msg.match("/freq").popFloat(floatArg).isOkNoMoreArgs()){
     	//rt_printf("here\n");
     // we added an else if condition to make sure the received freq value is within certain range
-    	if (floatArg <= 12000 && floatArg >= 1)
+    	if (floatArg <= 12000 && floatArg >= 0.00001)
     	{
     		rt_printf("received float %f\n", floatArg);
-    		gFrequency=floatArg;
-    		
+    		// gFrequency=floatArg;
+    		outputfreq[intArg]=floatArg;
     	}
     }
     return intArg;
