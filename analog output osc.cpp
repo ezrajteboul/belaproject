@@ -33,8 +33,10 @@ const float kAmplitudeRange = 1.0 - kMinimumAmplitude;
 float gFrequency = 1.0;
 float gPhase;
 float gInverseSampleRate;
+//make an outputfreq and input array for all the analog ins and outs on the board. inputs are not yet implemented. 
 float outputfreq [8];
 float input [8]; 
+//this is the stuff for the osc server: 
 int localPort = 7562;
 int remotePort = 7563;
 const char* remoteIp = "192.168.7.1";
@@ -47,6 +49,7 @@ int parseMessage(oscpkt::Message msg){
     
     int intArg;
     float floatArg;
+// this makes the bela expect a 32bit integer first for the channel # and a floating point argument for the frequency value second: 
     if (msg.match("/osc-test").popInt32(intArg).popFloat(floatArg).isOkNoMoreArgs()){
         rt_printf("received int %i and float %f\n", intArg, floatArg);
     }
@@ -58,7 +61,8 @@ int parseMessage(oscpkt::Message msg){
     	if (floatArg <= 12000 && floatArg >= 0.00001)
     	{
     		rt_printf("received float %f\n", floatArg);
-    		// gFrequency=floatArg;
+    		//gFrequency=floatArg;
+		// this makes the float write to the corresponding entry index in the array: 
     		outputfreq[intArg]=floatArg;
     	}
     }
@@ -88,8 +92,8 @@ bool setup(BelaContext *context, void *userData)
 	oscServer.setup(localPort);
     oscClient.setup(remotePort, remoteIp);
    
-		 // the following code sends an OSC message to address /osc-setup
-    // then waits 1 second for a reply on /osc-setup-reply
+	// the following code sends an OSC message to address /osc-setup
+	// then waits 1 second for a reply on /osc-setup-reply
     bool handshakeReceived = false;
     oscClient.sendMessageNow(oscClient.newMessage.to("/osc-setup").end());
     oscServer.receiveMessageNow(1000);
@@ -123,9 +127,14 @@ void render(BelaContext *context, void *userData)
 		}
 
         // Update and wrap phase of sine tone
-		gPhase += 2.0 * M_PI * gFrequency * gInverseSampleRate;
+		//this is the original code using gFrequency from the analog out example
+		//gPhase += 2.0 * M_PI * gFrequency * gInverseSampleRate;
+		//but we want to use our newly created output frequency array values, like this?
+		gPhase += 2.0 * M_PI * outputfreq[intArg] * gInverseSampleRate;
 		if(gPhase > 2.0 * M_PI)
 			gPhase -= 2.0 * M_PI;
+		
+	// is this where updating the outputfreq array goes? 
 	}
 	
 	while (oscServer.messageWaiting()){
